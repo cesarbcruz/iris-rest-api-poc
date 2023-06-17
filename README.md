@@ -38,8 +38,8 @@ or open the folder in VSCode and do the following:
 
 ## How to Work With it
 
-This template creates /crud REST web-application on IRIS which implements 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations.
-These interface works with a sample persistent class dc.Sample.Person.
+This template creates /poc REST web-application on IRIS which implements 4 types of communication: GET, POST, PUT and DELETE aka poc operations.
+These interface works with a sample persistent class dc.Sample.rps.
 
 Open http://localhost:52773/swagger-ui/index.html to test the REST API
 
@@ -48,30 +48,30 @@ Open http://localhost:52773/swagger-ui/index.html to test the REST API
 To test GET you need to have some data. You can create it with POST request (see below), or you can create some fake testing data. to do that open IRIS terminal or web terminal on /localhost:52773/terminal/  and call:
 
 ```
-USER>do ##class(dc.Sample.Person).AddTestData(10)
+USER>do ##class(dc.Sample.rps).AddTestData(10)
 ```
-This will create 10 random records in dc.Sample.Person class.
+This will create 10 random records in dc.Sample.rps class.
 
 
 You can get swagger Open API 2.0 documentation on:
 ```
-localhost:52773/crud/_spec
+localhost:52773/poc/_spec
 ```
 
 This REST API exposes two GET requests: all the data and one record.
 To get all the data in JSON call:
 
 ```
-localhost:52773/crud/persons/all
+localhost:52773/poc/rps/all
 ```
 
-To request the data for a particular record provide the id in GET request like 'localhost:52773/crud/persons/id' . E.g.:
+To request the data for a particular record provide the id in GET request like 'localhost:52773/poc/rps/id' . E.g.:
 
 ```
-localhost:52773/crud/persons/1
+localhost:52773/poc/rps/1
 ```
 
-This will return JSON data for the person with ID=1, something like that:
+This will return JSON data for the rps with ID=1, something like that:
 
 ```
 {"Name":"Elon Mask","Title":"CEO","Company":"Tesla","Phone":"123-123-1233","DOB":"1982-01-19"}
@@ -87,9 +87,9 @@ Create a POST request e.g. in Postman with raw data in JSON. e.g.
 
 Adjust the authorisation if needed - it is basic for container with default login and password for IRIR Community edition container
 
-and send the POST request to localhost:52773/crud/persons/
+and send the POST request to localhost:52773/poc/rps/
 
-This will create a record in dc.Sample.Person class of IRIS.
+This will create a record in dc.Sample.rps class of IRIS.
 
 # Testing PUT request
 
@@ -102,7 +102,7 @@ E.g. we want to change the record with id=5. Prepare in Postman the JSON in raw 
 
 and send the put request to:
 ```
-localhost:52773/crud/persons/5
+localhost:52773/poc/rps/5
 ```
 
 # Testing DELETE request
@@ -110,7 +110,7 @@ localhost:52773/crud/persons/5
 For delete request this REST API expects only the id of the record to delete. E.g. if the id=5 the following DELETE call will delete the record:
 
 ```
-localhost:52773/crud/persons/5
+localhost:52773/poc/rps/5
 ```
 
 ## How to start coding
