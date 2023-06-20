@@ -1,4 +1,4 @@
-Class poc.adapter.outbound.Neogrid Extends EnsLib.REST.Operation
+Class poc.adapter.outbound.NeogridRestClient Extends EnsLib.REST.Operation
 {
 
 Parameter INVOCATION = "Queue";

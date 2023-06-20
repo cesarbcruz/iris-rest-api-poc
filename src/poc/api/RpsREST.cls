@@ -22,7 +22,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Route Url="/rps/" Method="POST" Call="CreateRps"/>
 <!-- Create random Rps-->
 <Route Url="/rps/gen/:amount" Method="POST" Call="CreateRandomRps"/>
-
+<!-- Get Rps Queue -->
+<Route Url="/rps/queue/" Method="GET" Call="GetRpsQueue"/>
 
 </Routes>
 }
@@ -87,13 +88,26 @@ ClassMethod CreateRps() As %Status
     Set Rps = ##class(poc.model.RPS).%New()
     Set data=%request.Content
 
-
     $$$TOE(tSC,Rps.%JSONImport(data))
     $$$TOE(tSC,Rps.%Save())
 
+    Set yourBusinessService = ##class(poc.producer.RpsProducer).%New()
+
+    // Call the OnProcessInput method of the Business Service
+    Set status = yourBusinessService.send(Rps)
+
+    // Check the status and handle any errors
+    If $$$ISERR(status) {
+        // Handle the error condition
+        Write "Error: "_$SYSTEM.Status.GetErrorText(status)
+    } Else {
+        // Process the output message
+        Write "Output: "_status
+    }
+
     Set %response.Status = 204
     Set %response.ContentType = ..#CONTENTTYPEJSON
-    //d data.%ToJSON()
+    
     Do Rps.%JSONExport()
 
     Quit tSC
@@ -160,6 +174,15 @@ ClassMethod SwaggerSpec() As %Status
   Set swagger.info.version = "0.1"
   Set swagger.host = "localhost:52773"
   Return ..%ProcessResult($$$OK, swagger)
+}
+
+/// Rps get message queue
+ClassMethod GetRpsQueue() As %Status
+{
+  #dim tSC As %Status = $$$OK
+  Set yourBusinessService = ##class(poc.adapter.neogrid.RpsConsumer).%New()
+  Set status = yourBusinessService.receive()
+  RETURN tSC
 }
 
 }

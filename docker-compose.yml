@@ -1,5 +1,20 @@
 version: '3.6'
 services:
+  rabbitmq:
+    hostname: 'dev-rabbitmq'
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - '~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/mnesia/'
+    networks:
+      - poc-network
+  
   iris:
     build:
       context: .
@@ -9,5 +24,13 @@ services:
       - 51773:1972
       - 52773:52773
       - 53773
+    depends_on:
+      - rabbitmq
     volumes:
       - ./:/home/irisowner/dev
+    networks:
+      - poc-network
+
+networks:
+    poc-network:
+        driver: bridge
