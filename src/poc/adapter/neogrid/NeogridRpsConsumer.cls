@@ -1,10 +1,8 @@
 Class poc.adapter.neogrid.RpsConsumer Extends poc.common.BaseClientMessage
 {
 
-ClassMethod receive() As %Status
+ClassMethod receive(ByRef list As %Library.ListOfObjects) As %Status
 {
-    Write "receive..."
-
     Set sc = ..createClient(.client)
     If $$$ISERR(sc) {
         Quit sc
@@ -14,11 +12,15 @@ ClassMethod receive() As %Status
     Set rset.autoAck = 0
     Set queue = "neogrid"
 
-    #dim messages As %ListOfObjects
-    Set tSC = client.ReceiveMessage(queue, .messages, rset.ToJSON())
-    For i=1:1:messages.Size {
-            Set msg = messages.GetAt(i)
-            Write "Message: ", msg.ToJSON(), !
+    $$$ThrowOnError(client.ReceiveMessage(queue, .messages, rset.ToJSON()))
+    $$$ThrowOnError(client.Close())
+    For i = 1:1:messages.Count() {
+        Set obj = messages.GetAt(i)
+        Set data = obj.encodedContent.Read()
+        Set Rps = ##class(poc.model.RPS).%New()
+        $$$TOE(tSC,Rps.%JSONImport(data))
+        Do obj.encodedContent.%Close()
+        Do list.Insert(Rps)
     }
 
     Quit $$$OK

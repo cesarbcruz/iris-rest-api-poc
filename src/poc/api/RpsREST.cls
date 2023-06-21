@@ -179,10 +179,15 @@ ClassMethod SwaggerSpec() As %Status
 /// Rps get message queue
 ClassMethod GetRpsQueue() As %Status
 {
-  #dim tSC As %Status = $$$OK
-  Set yourBusinessService = ##class(poc.adapter.neogrid.RpsConsumer).%New()
-  Set status = yourBusinessService.receive()
-  RETURN tSC
+    Set yourBusinessService = ##class(poc.adapter.neogrid.RpsConsumer).%New()  
+    Set %response.ContentType = ..#CONTENTTYPEJSON
+    Set list = ##class(%ListOfObjects).%New()
+    Set tSC = yourBusinessService.receive(.list)
+    For i = 1:1:list.Count() {
+        Set obj = list.GetAt(i)
+        Do obj.%JSONExport()
+    }
+    RETURN tSC
 }
 
 }
