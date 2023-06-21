@@ -21,6 +21,7 @@ ClassMethod send(rps As poc.model.RPS) As %Status
     do msg.SetEncodedContent(body)
 
     Set status = client.SendMessage(msg)
+    $$$ThrowOnError(client.Close())
 
     If $$$ISERR(status) {
         Write "Error publishing message to RabbitMQ: "_$SYSTEM.Status.GetErrorText(status)
